@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LawBot</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+    <h1>Law Query Assistance</h1>
+    <form id="queryForm">
+        <label for="query">Enter your law-related question:</label><br>
+        <textarea id="query" name="query" rows="4" cols="50"></textarea><br>
+        <button type="submit">Submit</button>
+    </form>
+    
+    <!-- Loading spinner -->
+    <div id="loading"></div>
+    
+    <p id="response"></p>
+
+    <script>
+        document.getElementById('queryForm').onsubmit = async function(event) {
+            event.preventDefault();
+            
+            // Show the loading spinner and hide the response
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('response').innerText = '';
+
+            const query = document.getElementById('query').value;
+            const response = await fetch('/ask', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: new URLSearchParams({ 'query': query })
+            });
+
+            const result = await response.json();
+            
+            // Hide the loading spinner and show the response
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('response').innerText = result.response;
+        };
+    </script>
+</body>
+</html>
